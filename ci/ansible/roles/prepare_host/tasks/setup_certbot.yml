@@ -1,0 +1,33 @@
+---
+- name: Install certbot package
+  ansible.builtin.package:
+    name:
+      - certbot
+  become: true
+
+- name: Create webroot for certs
+  ansible.builtin.file:
+    name: /etc/delivery/nginx/acme/
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Obtain certificate first time
+  ansible.builtin.shell: >-
+    certbot certonly -w=/etc/delivery/nginx/acme/ --standalone
+    {% if letsencrypt_production != 'true' %} --test-cert {% endif %}
+    -m {{ letsencrypt_notify_email }} --agree-tos -d {{ backend_public_domain }} -n
+  args:
+    creates: /etc/letsencrypt/live/{{ backend_public_domain }}
+  become: true
+
+- name: Prepare certbot cron job
+  ansible.builtin.template:
+    src: "certbot.cron"
+    dest: "/etc/cron.d/certbot"
+    owner: root
+    group: root
+    mode: '0600'
+    force: true
+  become: true
+...

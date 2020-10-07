@@ -1,0 +1,28 @@
+---
+remote_source_path: /root/delivery
+compose_file: docker-compose.yml
+docker_network_base: "172.17.0.0"
+docker_network_size: "12"
+api_base_url: "api"
+jwt_public_rsa256_key: |
+  -----BEGIN PUBLIC KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAruJrNySsrpgoRLhYA9pH
+  MqYOt5FCwoNJ1Me5TkzgAT7y99eMiYKNJqcqQu+yWV7Z5mPZk96sVWwuKnQZayPK
+  EyJRfRnuBNO5P3iOhNyXOJEQMwAFsCydJLLLV9eVXLPI/RXnbCSMhTjZz5Kikj7L
+  7fVQBkXXPggUHQo5rICNhaHCFEkP+KwkAH3pulkIEbQdyQFryUzJ1jUgL20pQ/Bm
+  SJcVq+ALeh4FHMrfkzBYEQ2mznXyg2i7yRZ6bvXxzuMe5IU0k8/yxL0gm33Mios7
+  +tQdubJeZ8rxWlGhLxrbKYDejeCQe9pUrm6Pq2vjlAALlP5VVuPLSYVdAgAhjlVj
+  9wIDAQAB
+  -----END PUBLIC KEY-----
+
+backend_public_domain: "<place here a public domain name of your api server>"
+container_env_prefix: prod
+sentry_dsn: "<place here a DSN key of your Sentry>"
+obtain_letsencrypt_certs: false
+letsencrypt_production: false
+letsencrypt_notify_email: ""
+deploy_environment: Production
+uwsgi_processes: 8
+production_setup: true
+debug_endpoints: false
+...

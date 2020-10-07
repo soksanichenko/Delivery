@@ -1,0 +1,11 @@
+---
+- name: Send files
+  ansible.posix.synchronize:
+    src: "{{ item }}"
+    dest: "{{ remote_source_path }}"
+  loop:
+    - "../../../ci"
+    - "../../../src"
+    - "../../../requirements.txt"
+  become: true
+...

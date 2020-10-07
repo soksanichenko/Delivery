@@ -1,0 +1,8 @@
+---
+- name: Create configs directory
+  ansible.builtin.file:
+    name: "{{ config_root }}"
+    state: directory
+    mode: '0700'
+  become: true
+...

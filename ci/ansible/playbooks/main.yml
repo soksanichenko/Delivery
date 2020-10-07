@@ -1,0 +1,74 @@
+---
+- name: Common setup
+  hosts: api_server
+  tasks:
+    - name: Set connection type
+      ansible.builtin.set_fact:
+        connection: "{{ ansible_connection }}"
+      tags: [always]
+
+    - name: Fail for local connection with HTTPS enabled
+      ansible.builtin.fail:
+        msg: Production setup and HTTPS is not allowed for local connection
+      when: connection == "local" and (use_https == 'true')
+
+    - name: Set sources_root for local connection
+      ansible.builtin.set_fact:
+        sources_root: "{{ playbook_dir }}/../../../"
+      tags: [always]
+      when: connection == "local"
+
+    - name: Set sources_root for remote connection
+      ansible.builtin.set_fact:
+        sources_root: "{{ remote_source_path }}"
+      tags: [always]
+      when: connection != "local"
+
+    - name: Set config_root for local connection
+      ansible.builtin.set_fact:
+        config_root: "{{ playbook_dir }}/../../../runtime/{{ container_env_prefix }}"
+      tags: [always]
+      when: connection == "local"
+
+    - name: Set config_root for remote connection
+      ansible.builtin.set_fact:
+        config_root: "/etc/delivery/{{ container_env_prefix }}"
+      tags: [always]
+      when: connection != "local"
+
+    - name: Remote-only actions
+      block:
+        - name: Run common_setup role
+          import_role:
+            name: common_setup
+          tags: [common_setup]
+        - name: Run docker role
+          import_role:
+            name: docker
+          tags: [docker]
+        - name: Run deploy_files role
+          import_role:
+            name: deploy_files
+          tags: [sync]
+      when: connection != "local"
+
+- name: Setup infrastructure
+  hosts: api_server
+  tasks:
+    - name: Run prepare_host role
+      import_role:
+        name: prepare_host
+      tags: [prepare_host]
+    - name: Run postgres role
+      import_role:
+        name: postgres
+      tags: [postgres]
+    - name: Run backend role
+      import_role:
+        name: backend
+      tags: [backend]
+    - name: Run nginx role
+      import_role:
+        name: nginx
+      tags: [nginx]
+...

@@ -1,0 +1,8 @@
+---
+- name: Create environment files
+  ansible.builtin.import_tasks: create_env_file.yml
+
+- name: Set up certbot
+  ansible.builtin.import_tasks: setup_certbot.yml
+  when: obtain_letsencrypt_certs == 'true'
+...

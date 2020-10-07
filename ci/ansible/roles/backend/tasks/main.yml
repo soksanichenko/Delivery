@@ -1,0 +1,7 @@
+---
+- name: Start backend service
+  import_role:
+    name: start_service
+  vars:
+    service: backend
+...

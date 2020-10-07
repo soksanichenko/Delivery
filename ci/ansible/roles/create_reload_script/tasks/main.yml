@@ -1,0 +1,10 @@
+---
+- name: Create webserver reload script
+  ansible.builtin.template:
+    src: reload_nginx.sh.j2
+    dest: /usr/bin/reload-docker-nginx
+    owner: root
+    group: root
+    mode: 'a+x'
+  become: true
+...

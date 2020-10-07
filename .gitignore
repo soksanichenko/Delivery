@@ -1,0 +1,6 @@
+.idea/
+venv/
+__pycache__
+/ci/ansible/inventory/dev
+/jwt_generator/jwtRS256.key
+/jwt_generator/jwtRS256.key.pub

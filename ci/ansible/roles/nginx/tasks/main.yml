@@ -1,0 +1,30 @@
+---
+- name: Create directory for nginx configs
+  ansible.builtin.file:
+    name: "{{ config_root }}/nginx/"
+    state: directory
+    mode: '0700'
+  become: true
+
+- name: Prepare nginx configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ config_root }}/nginx/nginx.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Start nginx service
+  import_role:
+    name: start_service
+  vars:
+    service: nginx
+
+- name: Create nginx reload script
+  import_role:
+    name: create_reload_script
+  vars:
+    # Finds the nginx container and sends HUP signal to reload its config
+    command: !unsafe "docker kill -s HUP `docker ps --format \"{{.ID}} {{.Names}}\" | grep _nginx | awk '{ print $1 }'`"
+...
